@@ -9,18 +9,19 @@ memeController.createMeme = async (req, res, next) => {
     // Read data from the json file
     let rawData = fs.readFileSync("memes.json");
     let memes = JSON.parse(rawData).memes;
-    const { texts } = req.body;
+    let { texts } = req.body;
     const meme = {};
     // Prepare data for the new meme
     meme.id = utilsHelper.generateRandomHexString(15);
     meme.originalImage = req.file.filename;
     meme.originalImagePath = req.file.path;
-    meme.outputMemePath = `${req.file.destination}MEME_${
+    console.log(req.file);
+    meme.outputMemePath = `${req.file.destination}/MEME_${
       meme.id
     }.${meme.originalImage.split(".").pop()}`;
-    console.log(texts);
-    meme.texts =
-      texts && texts.length ? texts.map((text) => JSON.parse(text)) : [];
+    if (!Array.isArray(texts)) texts = [texts];
+    meme.texts = texts.map((text) => JSON.parse(text));
+    // texts && texts.length ?  : [];
     // Put text on image
     await photoHelper.putTextOnImage(
       meme.originalImagePath,
@@ -44,6 +45,29 @@ memeController.createMeme = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+memeController.getMemes = (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const perPage = parseInt(req.query.perPage) || 10;
+
+  // Read data from the json file
+  let rawData = fs.readFileSync("memes.json");
+  let memes = JSON.parse(rawData).memes;
+  // Calculate slicing
+  const totalMemes = memes.length;
+  const totalPages = Math.ceil(totalMemes / perPage);
+  const offset = perPage * (page - 1);
+  memes = memes.slice(offset, offset + perPage);
+
+  return utilsHelper.sendResponse(
+    res,
+    200,
+    true,
+    { memes, totalPages },
+    null,
+    "Get memes successfully"
+  );
 };
 
 module.exports = memeController;

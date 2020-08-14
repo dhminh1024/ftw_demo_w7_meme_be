@@ -10,9 +10,7 @@ const memeController = require("../controllers/memeController");
  * @description Get all memes
  * @access Public
  */
-router.get("/", function (req, res, next) {
-  res.send({ status: "ok", data: "Get all memes" });
-});
+router.get("/", memeController.getMemes);
 
 /**
  * @route POST api/memes
