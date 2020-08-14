@@ -3,6 +3,7 @@ var router = express.Router();
 const fileUpload = require("../helpers/upload.helper")("public/images/");
 const uploader = fileUpload.uploader;
 const photoHelper = require("../helpers/photo.helper");
+const memeController = require("../controllers/memeController");
 
 /**
  * @route GET api/memes
@@ -18,13 +19,11 @@ router.get("/", function (req, res, next) {
  * @description Create a new meme
  * @access Public
  */
-router.post("/", uploader.single("image"), photoHelper.resize, function (
-  req,
-  res,
-  next
-) {
-  console.log(req.file);
-  res.send({ status: "ok" });
-});
+router.post(
+  "/",
+  uploader.single("image"),
+  photoHelper.resize,
+  memeController.createMeme
+);
 
 module.exports = router;
