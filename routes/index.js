@@ -1,9 +1,8 @@
 var express = require("express");
 var router = express.Router();
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
-  res.send({ status: "ok", data: "Hello World!" });
-});
+// All route of Meme
+const memeRoutes = require("./memeApi");
+router.use("/memes", memeRoutes);
 
 module.exports = router;
