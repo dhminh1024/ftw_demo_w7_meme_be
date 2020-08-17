@@ -70,7 +70,12 @@ memeController.updateMeme = async (req, res, next) => {
     }
     const meme = memes[index];
     let { texts } = req.body;
-    if (!Array.isArray(texts)) texts = [texts];
+    if (texts) {
+      if (!Array.isArray(texts)) texts = [texts];
+      meme.texts = texts.map((text) => JSON.parse());
+    } else {
+      meme.texts = [];
+    }
     meme.texts = texts || [];
     meme.updatedAt = Date.now();
 
