@@ -76,7 +76,6 @@ memeController.updateMeme = async (req, res, next) => {
     } else {
       meme.texts = [];
     }
-    meme.texts = texts || [];
     meme.updatedAt = Date.now();
 
     // Put text on image
